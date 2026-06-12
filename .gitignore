@@ -31,3 +31,14 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Environment Variables ###
+.env
+*.env
+.env.*
+!.env.example
+
+# Docker
+postgres_data/
+
+

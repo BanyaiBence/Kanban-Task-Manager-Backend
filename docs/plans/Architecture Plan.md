@@ -217,16 +217,13 @@ The React frontend is a moderate SPA focusing on usability and clear interaction
    - Implement task ordering and movement logic with transactional updates.
    - Add labels and comments, and implement search/filter endpoints.
 
-4. **Polish & Portfolio Enhancements**
+4. **Polish & Enhancements**
    - Add tests, Docker setup, GitHub Actions CI.
    
-5. **Frontend Integration**
+5. **Frontend Integration (In the future)**
 
 ---
 
 ## Useful References
 
-1. [Hexagonal Architecture Template with Java and Spring Boot](https://kamilmazurek.pl/hexagonal-architecture-template)
-2. [Hexagonal vs Clean Architecture in Spring Boot - Trinity Logic](https://www.trinitylogic.co.uk/blog/hexagonal-vs-clean-architecture/)
-3. [Hexagonal Architecture in Spring Boot: A Practical Guide](https://dev.to/jhonifaber/hexagonal-architecture-or-port-adapters-23ed)
 
