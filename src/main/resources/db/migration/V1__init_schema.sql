@@ -18,7 +18,7 @@ CREATE TABLE boards (
     CONSTRAINT fk_board_owner FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE TABLE columns (
+CREATE TABLE board_columns (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     position VARCHAR(255) NOT NULL, -- Lexicographical ordering
@@ -27,7 +27,7 @@ CREATE TABLE columns (
     CONSTRAINT fk_column_board FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE
 );
 
-CREATE INDEX idx_columns_board_position ON columns(board_id, position);
+CREATE INDEX idx_columns_board_position ON board_columns(board_id, position);
 
 CREATE TABLE tasks (
     id BIGSERIAL PRIMARY KEY,
@@ -41,7 +41,7 @@ CREATE TABLE tasks (
     column_id BIGINT NOT NULL,
     assignee_id BIGINT,
     version BIGINT DEFAULT 0, -- Optimistic locking
-    CONSTRAINT fk_task_column FOREIGN KEY (column_id) REFERENCES columns(id) ON DELETE CASCADE,
+    CONSTRAINT fk_task_column FOREIGN KEY (column_id) REFERENCES board_columns(id) ON DELETE CASCADE,
     CONSTRAINT fk_task_assignee FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
