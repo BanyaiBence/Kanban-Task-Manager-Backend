@@ -3,10 +3,11 @@ package com.bencebanyai.kanban.kanbantaskmanager.web.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.validation.FieldError;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -16,19 +17,26 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     /**
-     * Handles 404 Not Found
+     * Handles resource not found.
+     *
+     * @param ex the exception
+     * @return 404 Not Found
      */
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
         ErrorResponse response = new ErrorResponse(
-            HttpStatus.NOT_FOUND.value(),"RESOURCE_NOT_FOUND", ex.getMessage(), Instant.now(), null
+                HttpStatus.NOT_FOUND.value(), "RESOURCE_NOT_FOUND", ex.getMessage(), Instant.now(), null
         );
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     /**
-     * Handles 400 Bad Request for Bean Validation errors (@Valid)
+     * Handles Bean Validation errors (@Valid).
+     *
+     * @param ex the exception
+     * @return 400 Bad Request with validation error details
      */
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -41,18 +49,21 @@ public class GlobalExceptionHandler {
         );
 
         ErrorResponse response = new ErrorResponse(
-          HttpStatus.BAD_REQUEST.value(),
-          "VALIDATION_FAILED",
-          "Invalid request payload",
-          Instant.now(),
-          errors
+                HttpStatus.BAD_REQUEST.value(),
+                "VALIDATION_FAILED",
+                "Invalid request payload",
+                Instant.now(),
+                errors
         );
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     /**
-     * Handles 403 Forbidden for Spring Security authorization checks (@PreAuthorize)
+     * Handles Spring Security authorization checks (@PreAuthorize).
+     *
+     * @param ex the exception
+     * @return 403 Forbidden with an appropriate error message
      */
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
@@ -65,6 +76,43 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
+
+    /**
+     * Handles user already being taken.
+     *
+     * @param ex the exception
+     * @return 409 Conflict
+     */
+    @ExceptionHandler(UserAlreadyTakenException.class)
+    public ResponseEntity<ErrorResponse> handleUserAlreadyTakenException(UserAlreadyTakenException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "USER_ALREADY_EXISTS",
+                ex.getMessage(),
+                Instant.now(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    /**
+     * Handles incorrect passwords or emails during login.
+     *
+     * @param ex the exception
+     * @return 401 Unauthorized
+     */
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                "INVALID_CREDENTIALS",
+                "Invalid email or password.",
+                Instant.now(),
+                null // Jackson will exclude this from the JSON
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+    
 
     /**
      * Fallback for 500 Internal Server Error
