@@ -33,14 +33,15 @@ public class User {
   @Column(name = "created_at", nullable = false, updatable = false)
   private Instant createdAt;
 
-  // Relationships
-
+  @Builder.Default
   @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Board> boards = new HashSet<>();
 
+  @Builder.Default
   @OneToMany(mappedBy = "assignee")
   private Set<Task> assignedTasks = new HashSet<>();
 
+  @Builder.Default
   @OneToMany(mappedBy = "author")
   private Set<Comment> comments = new HashSet<>();
 
