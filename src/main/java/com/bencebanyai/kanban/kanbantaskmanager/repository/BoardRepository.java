@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
+  java.util.List<Board> findByOwnerIdAndIsArchivedFalse(Long ownerId);
+
+  boolean existsByIdAndOwnerEmail(Long id, String email);
 }

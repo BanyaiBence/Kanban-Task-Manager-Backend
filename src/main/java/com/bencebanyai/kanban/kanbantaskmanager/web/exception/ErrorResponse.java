@@ -5,10 +5,9 @@ import java.time.Instant;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record ErrorResponse (
+public record ErrorResponse(
     int status,
     String errorCode,
     String message,
     Instant timestamp,
-    Map<String, String> validationErrors
-) {}
+    Map<String, String> validationErrors) {}
